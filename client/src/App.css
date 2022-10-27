@@ -126,7 +126,6 @@ body {
 }
 
 #list-selector-heading {
-  position: absolute;
   left: 0%;
   top: 0%;
   width: 100%;
@@ -144,7 +143,6 @@ body {
 }
 
 #list-selector-list {
-  position: absolute;
   left: 0%;
   top: 10%;
   width: 100%;
@@ -259,6 +257,10 @@ input {
 
 .disabled:hover {
   color: var(--swatch-neutral);
+}
+
+.playlist-selector {
+  bottom: 0;
 }
 
 /* THIS STYLE SHEET MANAGES STYLE FOR OUR MODAL, i.e. DIALOG BOX */

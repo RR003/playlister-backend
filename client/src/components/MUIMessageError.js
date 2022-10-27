@@ -2,8 +2,7 @@ import { useContext, useEffect } from "react";
 import AuthContext from "../auth";
 import * as React from "react";
 import Box from "@mui/material/Box";
-import Modal from "@mui/material/Modal";
-import Alert from "@mui/material/Alert";
+import { Modal, Alert, Button } from "@mui/material";
 
 const style = {
   position: "absolute",
@@ -32,13 +31,13 @@ export default function MUIMessageError() {
         <Alert open={auth.e} severity="warning">
           {auth.message}
         </Alert>
-        <button
+        <Button
           id="dialog-yes-button"
           className="modal-button"
           onClick={hideModal}
         >
           Confirm
-        </button>
+        </Button>
       </Box>
     </Modal>
   );
