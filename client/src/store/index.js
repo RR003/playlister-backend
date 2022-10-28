@@ -290,7 +290,7 @@ function GlobalStoreContextProvider(props) {
   };
 
   // THIS FUNCTION PROCESSES CLOSING THE CURRENTLY LOADED LIST
-  store.closeCurrentList = function () {
+  store.closeCurrentList = async function () {
     storeReducer({
       type: GlobalStoreActionType.CLOSE_CURRENT_LIST,
       payload: {},
@@ -441,15 +441,16 @@ function GlobalStoreContextProvider(props) {
   };
   // THIS FUNCTION CREATES A NEW SONG IN THE CURRENT LIST
   // USING THE PROVIDED DATA AND PUTS THIS SONG AT INDEX
-  store.createSong = function (index, song) {
+  store.createSong = async function (index, song) {
     let list = store.currentList;
     list.songs.splice(index, 0, song);
     // NOW MAKE IT OFFICIAL
-    store.updateCurrentList();
+    await store.updateCurrentList();
   };
   // THIS FUNCTION MOVES A SONG IN THE CURRENT LIST FROM
   // start TO end AND ADJUSTS ALL OTHER ITEMS ACCORDINGLY
-  store.moveSong = function (start, end) {
+  store.moveSong = async function (start, end) {
+    console.log("MOVING SONG");
     let list = store.currentList;
 
     // WE NEED TO UPDATE THE STATE FOR THE APP
@@ -466,21 +467,20 @@ function GlobalStoreContextProvider(props) {
       }
       list.songs[end] = temp;
     }
-
     // NOW MAKE IT OFFICIAL
-    store.updateCurrentList();
+    await store.updateCurrentList();
   };
   // THIS FUNCTION REMOVES THE SONG AT THE index LOCATION
   // FROM THE CURRENT LIST
-  store.removeSong = function (index) {
+  store.removeSong = async function (index) {
     let list = store.currentList;
     list.songs.splice(index, 1);
 
     // NOW MAKE IT OFFICIAL
-    store.updateCurrentList();
+    await store.updateCurrentList();
   };
   // THIS FUNCTION UPDATES THE TEXT IN THE ITEM AT index TO text
-  store.updateSong = function (index, songData) {
+  store.updateSong = async function (index, songData) {
     let list = store.currentList;
     let song = list.songs[index];
     song.title = songData.title;
@@ -488,7 +488,7 @@ function GlobalStoreContextProvider(props) {
     song.youTubeId = songData.youTubeId;
 
     // NOW MAKE IT OFFICIAL
-    store.updateCurrentList();
+    await store.updateCurrentList();
   };
   store.addNewSong = () => {
     let playlistSize = store.getPlaylistSize();
@@ -536,20 +536,17 @@ function GlobalStoreContextProvider(props) {
     );
     tps.addTransaction(transaction);
   };
-  store.updateCurrentList = function () {
-    async function asyncUpdateCurrentList() {
-      const response = await api.updatePlaylistById(
-        store.currentList._id,
-        store.currentList
-      );
-      if (response.data.success) {
-        storeReducer({
-          type: GlobalStoreActionType.SET_CURRENT_LIST,
-          payload: store.currentList,
-        });
-      }
+  store.updateCurrentList = async function () {
+    const response = await api.updatePlaylistById(
+      store.currentList._id,
+      store.currentList
+    );
+    if (response.data.success) {
+      storeReducer({
+        type: GlobalStoreActionType.SET_CURRENT_LIST,
+        payload: store.currentList,
+      });
     }
-    asyncUpdateCurrentList();
   };
   store.undo = function () {
     tps.undoTransaction();

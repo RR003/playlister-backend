@@ -24,14 +24,22 @@ function SongCard(props) {
     setDraggedTo(false);
   }
 
-  function handleDrop(event) {
+  async function handleDrop(event) {
     event.preventDefault();
-    let targetIndex = index;
-    let sourceIndex = Number(event.dataTransfer.getData("song"));
+    let target = event.target;
+    let targetId = target.id;
+    targetId = targetId.substring(target.id.indexOf("-") + 1);
+    let sourceId = event.dataTransfer.getData("song");
+    sourceId = sourceId.substring(sourceId.indexOf("-") + 1);
+
     setDraggedTo(false);
 
+    // ASK THE MODEL TO MOVE THE DATA
+    let index1 = parseInt(targetId.substring(0, 1));
+    let index2 = parseInt(sourceId.substring(0, 1));
+
     // UPDATE THE LIST
-    store.addMoveSongTransaction(sourceIndex, targetIndex);
+    await store.addMoveSongTransaction(index2, index1);
   }
   function handleRemoveSong(event) {
     store.showRemoveSongModal(index, song);

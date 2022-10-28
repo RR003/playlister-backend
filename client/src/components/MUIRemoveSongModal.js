@@ -39,12 +39,28 @@ export default function MUIRemoveSongModal() {
   return (
     <Modal open={store.deleteSong !== null}>
       <Box sx={style}>
-        <div
-          id="remove-song-modal"
-          className={modalClass}
-          data-animation="slideInOutLeft"
-        >
-          <div className="modal-root" id="verify-remove-song-root">
+        <div className="modal-dialog" data-animation="slideInOutLeft">
+          <header className="dialog-header">
+            Delete {store.deleteSong.title} from the playlist?
+          </header>
+          <div id="confirm-cancel-container">
+            <button
+              id="dialog-yes-button"
+              className="modal-button"
+              onClick={handleConfirmRemoveSong}
+            >
+              Confirm
+            </button>
+            <button
+              id="dialog-no-button"
+              className="modal-button"
+              onClick={handleCancelRemoveSong}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+        {/*<div className="modal-root" id="verify-remove-song-root">
             <div className="modal-north">Remove {store.deleteSong.title}?</div>
             <div className="modal-center">
               <div className="modal-center-content">
@@ -69,7 +85,7 @@ export default function MUIRemoveSongModal() {
               />
             </div>
           </div>
-        </div>
+        </div>*/}
       </Box>
     </Modal>
   );
