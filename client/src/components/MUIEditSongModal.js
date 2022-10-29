@@ -3,6 +3,7 @@ import GlobalStoreContext from "../store";
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
+import Button from "@mui/material/Button";
 
 const style = {
   position: "absolute",
@@ -51,15 +52,15 @@ export default function MUIEditSongModal() {
     <Modal open={store.currentSong !== null}>
       <Box sx={style}>
         <div
-          id="edit-song-modal"
-          className="modal is-visible"
+          id="modal-dialog"
+          className="modal-dialog"
           data-animation="slideInOutLeft"
         >
-          <div id="edit-song-root" className="modal-root">
-            <div id="edit-song-modal-header" className="modal-north">
-              Edit Song
+          <div id="dialog-header">
+            <div className="">
+              <h2>Edit Song</h2>
             </div>
-            <div id="edit-song-modal-content" className="modal-center">
+            <div id="dialog-header" className="modal-center">
               <div id="title-prompt" className="modal-prompt">
                 Title:
               </div>
@@ -91,21 +92,25 @@ export default function MUIEditSongModal() {
                 onChange={handleUpdateYouTubeId}
               />
             </div>
-            <div className="modal-south">
-              <input
-                type="button"
-                id="edit-song-confirm-button"
+            <div className="confirm-cancel-container">
+              <Button
+                id="dialog-yes-button"
                 className="modal-button"
-                value="Confirm"
                 onClick={handleConfirmEditSong}
-              />
-              <input
-                type="button"
-                id="edit-song-cancel-button"
+                color="primary"
+                variant="contained"
+              >
+                Confirm
+              </Button>
+              <Button
+                id="dialog-no-button"
                 className="modal-button"
-                value="Cancel"
                 onClick={handleCancelEditSong}
-              />
+                color="secondary"
+                variant="contained"
+              >
+                Cancel
+              </Button>
             </div>
           </div>
         </div>

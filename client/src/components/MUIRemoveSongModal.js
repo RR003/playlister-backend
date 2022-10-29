@@ -3,6 +3,7 @@ import GlobalStoreContext from "../store";
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
+import Button from "@mui/material/Button";
 
 const style = {
   position: "absolute",
@@ -44,48 +45,26 @@ export default function MUIRemoveSongModal() {
             Delete {store.deleteSong.title} from the playlist?
           </header>
           <div id="confirm-cancel-container">
-            <button
+            <Button
               id="dialog-yes-button"
               className="modal-button"
               onClick={handleConfirmRemoveSong}
+              color="primary"
+              variant="contained"
             >
               Confirm
-            </button>
-            <button
+            </Button>
+            <Button
               id="dialog-no-button"
               className="modal-button"
               onClick={handleCancelRemoveSong}
+              color="secondary"
+              variant="contained"
             >
               Cancel
-            </button>
+            </Button>
           </div>
         </div>
-        {/*<div className="modal-root" id="verify-remove-song-root">
-            <div className="modal-north">Remove {store.deleteSong.title}?</div>
-            <div className="modal-center">
-              <div className="modal-center-content">
-                Are you sure you wish to permanently remove{" "}
-                {store.deleteSong.title} from the playlist?
-              </div>
-            </div>
-            <div className="modal-south">
-              <input
-                type="button"
-                id="remove-song-confirm-button"
-                className="modal-button"
-                onClick={handleConfirmRemoveSong}
-                value="Confirm"
-              />
-              <input
-                type="button"
-                id="remove-song-cancel-button"
-                className="modal-button"
-                onClick={handleCancelRemoveSong}
-                value="Cancel"
-              />
-            </div>
-          </div>
-        </div>*/}
       </Box>
     </Modal>
   );

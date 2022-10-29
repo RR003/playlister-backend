@@ -35,6 +35,8 @@ export default function MUIMessageError() {
           id="dialog-yes-button"
           className="modal-button"
           onClick={hideModal}
+          color="primary"
+          variant="contained"
         >
           Confirm
         </Button>

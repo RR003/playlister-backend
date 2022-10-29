@@ -1,4 +1,5 @@
 import { useContext } from "react";
+import { useHistory } from "react-router-dom";
 import AuthContext from "../auth";
 
 import Copyright from "./Copyright";
@@ -19,11 +20,16 @@ import MUIMessageError from "./MUIMessageError";
 
 export default function LoginScreen() {
   const { auth } = useContext(AuthContext);
+  const history = useHistory();
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     auth.loginUser(formData.get("email"), formData.get("password"));
+  };
+
+  const handleClickLink = (event) => {
+    history.push("/register");
   };
 
   return (
@@ -106,7 +112,7 @@ export default function LoginScreen() {
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link onClick={handleClickLink} variant="body2">
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>
