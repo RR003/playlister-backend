@@ -79,7 +79,7 @@ function GlobalStoreContextProvider(props) {
         return setStore({
           currentModal: CurrentModal.NONE,
           idNamePairs: payload.idNamePairs,
-          currentList: payload.playlist,
+          currentList: store.currentList,
           currentSongIndex: -1,
           currentSong: null,
           deleteSongIndex: -1,

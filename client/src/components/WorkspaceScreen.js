@@ -16,6 +16,18 @@ function WorkspaceScreen() {
   const { store } = useContext(GlobalStoreContext);
   store.history = useHistory();
 
+  const handleKeyDown = async (event) => {
+    if (event.keyCode === 90 && event.ctrlKey) {
+      let res = await store.canUndo();
+      if (res) await store.undo();
+    }
+
+    if (event.keyCode === 89 && event.ctrlKey) {
+      let res = await store.canRedo();
+      if (res) await store.redo();
+    }
+  };
+
   let modalJSX = "";
   if (store.isEditSongModalOpen()) {
     modalJSX = <MUIEditSongModal />;
@@ -24,7 +36,7 @@ function WorkspaceScreen() {
   }
   console.log(store);
   return (
-    <Box>
+    <Box onKeyDown={handleKeyDown} tabIndex="0">
       <List
         id="playlist-cards"
         sx={{ width: "100%", bgcolor: "background.paper" }}
