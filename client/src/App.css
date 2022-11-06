@@ -28,6 +28,7 @@ body {
   left: 10%;
   height: 90%;
   top: 5%;
+  overflow: scroll;
 }
 
 #app-root {
@@ -261,6 +262,10 @@ input {
 
 .playlist-selector {
   bottom: 0;
+}
+
+#playlister-statusbar {
+  background-color: salmon;
 }
 
 /* THIS STYLE SHEET MANAGES STYLE FOR OUR MODAL, i.e. DIALOG BOX */
