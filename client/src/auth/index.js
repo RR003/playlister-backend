@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import api from "./auth-request-api";
 
@@ -13,6 +13,9 @@ export const AuthActionType = {
   REGISTER_USER: "REGISTER_USER",
   HIDE_ERROR_MODAL: "HIDE_ERROR_MODAL",
   DISPLAY_ERROR_MODAL: "DISPLAY_ERROR_MODAL",
+  HOME: "HOME",
+  ALL_LISTS: "ALL_LISTS",
+  USERS: "USERS",
 };
 
 function AuthContextProvider(props) {
@@ -21,6 +24,9 @@ function AuthContextProvider(props) {
     loggedIn: false,
     e: false,
     message: "",
+    home: false,
+    allLists: false,
+    users: false,
   });
   const history = useHistory();
 
@@ -37,6 +43,9 @@ function AuthContextProvider(props) {
           loggedIn: payload.loggedIn,
           e: auth.e,
           message: auth.message,
+          home: auth.home,
+          allLists: auth.allLists,
+          users: auth.users,
         });
       }
       case AuthActionType.LOGIN_USER: {
@@ -45,6 +54,9 @@ function AuthContextProvider(props) {
           loggedIn: true,
           e: auth.e,
           message: auth.message,
+          home: true,
+          allLists: false,
+          users: false,
         });
       }
       case AuthActionType.LOGOUT_USER: {
@@ -53,6 +65,9 @@ function AuthContextProvider(props) {
           loggedIn: false,
           e: auth.e,
           message: auth.message,
+          home: false,
+          allLists: false,
+          users: false,
         });
       }
       case AuthActionType.REGISTER_USER: {
@@ -61,6 +76,9 @@ function AuthContextProvider(props) {
           loggedIn: true,
           e: auth.e,
           message: auth.message,
+          home: true,
+          allLists: false,
+          users: false,
         });
       }
       case AuthActionType.HIDE_ERROR_MODAL: {
@@ -69,6 +87,9 @@ function AuthContextProvider(props) {
           loggedIn: auth.loggedIn,
           e: false,
           message: "",
+          home: auth.home,
+          allLists: auth.allLists,
+          users: auth.users,
         });
       }
       case AuthActionType.DISPLAY_ERROR_MODAL: {
@@ -77,8 +98,45 @@ function AuthContextProvider(props) {
           loggedIn: auth.loggedIn,
           e: true,
           message: payload.message,
+          home: auth.home,
+          allLists: auth.allLists,
+          users: auth.users,
         });
       }
+      case AuthActionType.HOME: {
+        return setAuth({
+          user: auth.user,
+          loggedIn: auth.loggedIn,
+          e: false,
+          message: "",
+          home: true,
+          allLists: false,
+          users: false,
+        });
+      }
+      case AuthActionType.ALL_LISTS: {
+        return setAuth({
+          user: auth.user,
+          loggedIn: auth.loggedIn,
+          e: false,
+          message: "",
+          home: false,
+          allLists: true,
+          users: false,
+        });
+      }
+      case AuthActionType.USERS: {
+        return setAuth({
+          user: auth.user,
+          loggedIn: auth.loggedIn,
+          e: false,
+          message: "",
+          home: false,
+          allLists: false,
+          users: true,
+        });
+      }
+
       default:
         return auth;
     }
@@ -141,6 +199,7 @@ function AuthContextProvider(props) {
     try {
       const response = await api.loginUser(email, password);
       if (response.status === 200) {
+        //menu.login();
         authReducer({
           type: AuthActionType.LOGIN_USER,
           payload: {
@@ -178,6 +237,24 @@ function AuthContextProvider(props) {
     }
     console.log("user initials: " + initials);
     return initials;
+  };
+
+  auth.goHome = function () {
+    authReducer({
+      type: AuthActionType.HOME,
+    });
+  };
+
+  auth.goAllLists = function () {
+    authReducer({
+      type: AuthActionType.ALL_LISTS,
+    });
+  };
+
+  auth.goUsers = function () {
+    authReducer({
+      type: AuthActionType.USERS,
+    });
   };
 
   return (

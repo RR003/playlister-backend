@@ -17,11 +17,7 @@ function Statusbar() {
     if (store.currentList) text = store.currentList.name;
   }
 
-  return (
-    <div id="playlister-statusbar">
-      <Typography variant="h4">{text}</Typography>
-    </div>
-  );
+  return <div></div>;
 }
 
 export default Statusbar;

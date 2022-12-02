@@ -1,11 +1,23 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { GlobalStoreContext } from "../store";
-import Box from "@mui/material/Box";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import IconButton from "@mui/material/IconButton";
 import ListItem from "@mui/material/ListItem";
 import TextField from "@mui/material/TextField";
+import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
+import ThumbDownOffAltIcon from "@mui/icons-material/ThumbDownOffAlt";
+import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import SongCard from "./SongCard.js";
+import List from "@mui/material/List";
+import Button from "@mui/material/Button";
+import AddSongButton from "./AddSongButton.js";
+import MUIRemoveSongModal from "./MUIRemoveSongModal";
+import MUIEditSongModal from "./MUIEditSongModal";
+import MUIDeleteModal from "./MUIDeleteModal";
 
 /*
     This is a card in our list of top 5 lists. It lets select
@@ -18,7 +30,34 @@ function ListCard(props) {
   const { store } = useContext(GlobalStoreContext);
   const [editActive, setEditActive] = useState(false);
   const [text, setText] = useState("");
-  const { idNamePair, selected } = props;
+  const { playlist, selected } = props;
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  useEffect(async () => {
+    console.log("this is actially changing2");
+  }, [store]);
+
+  async function expand() {
+    if (!isExpanded) {
+      // if expanded
+      if (store.currentList === null) {
+        setIsExpanded(!isExpanded);
+        await store.setCurrentList(playlist._id);
+      }
+    } else {
+      setIsExpanded(!isExpanded);
+      await store.closeCurrentList();
+    }
+  }
+
+  function handleDoubleClick(event) {
+    console.log(event);
+    if (event.detail === 2) {
+      console.log("double click");
+      setEditActive(true);
+      // store.showEditSongModal(index, song);
+    }
+  }
 
   function handleLoadList(event, id) {
     console.log("handleLoadList for " + id);
@@ -40,18 +79,7 @@ function ListCard(props) {
   }
 
   function toggleEdit() {
-    let newActive = !editActive;
-    if (newActive) {
-      store.setIsListNameEditActive();
-    }
-    setEditActive(newActive);
-  }
-
-  async function handleDeleteList(event, id) {
-    event.stopPropagation();
-    let _id = event.target.id;
-    _id = ("" + _id).substring("delete-list-".length);
-    store.markListForDeletion(id);
+    setEditActive(false);
   }
 
   function handleKeyPress(event) {
@@ -73,56 +101,140 @@ function ListCard(props) {
   if (store.isListNameEditActive) {
     cardStatus = true;
   }
+  let modalJSX = "";
+  if (store.isEditSongModalOpen()) {
+    modalJSX = <MUIEditSongModal />;
+  } else if (store.isRemoveSongModalOpen()) {
+    modalJSX = <MUIRemoveSongModal />;
+  }
+
+  function handleUndo() {
+    store.undo();
+  }
+
+  function handleRedo() {
+    store.redo();
+  }
+
+  async function handleDeleteList() {
+    store.markListForDeletion(playlist._id);
+  }
+
+  async function handlePublish() {
+    await store.publishPlaylist();
+    expand();
+  }
+
   let cardElement = (
     <ListItem
-      id={idNamePair._id}
-      key={idNamePair._id}
-      sx={{ marginTop: "15px", display: "flex", p: 1 }}
-      style={{ width: "100%", fontSize: "48pt" }}
-      button
-      onClick={(event) => {
-        handleLoadList(event, idNamePair._id);
+      id={playlist._id}
+      key={playlist._id}
+      sx={{ display: "flex", p: 1 }}
+      style={{
+        width: "100%",
+        border: "1px solid",
+        borderRadius: "5px",
+        marginBottom: "20px",
       }}
+      button
     >
-      <Box sx={{ p: 1, flexGrow: 1 }}>{idNamePair.name}</Box>
-      <Box sx={{ p: 1 }}>
-        <IconButton onClick={handleToggleEdit} aria-label="edit">
-          <EditIcon style={{ fontSize: "48pt" }} />
-        </IconButton>
-      </Box>
-      <Box sx={{ p: 1 }}>
-        <IconButton
-          onClick={(event) => {
-            handleDeleteList(event, idNamePair._id);
-          }}
-          aria-label="delete"
-        >
-          <DeleteIcon style={{ fontSize: "48pt" }} />
-        </IconButton>
-      </Box>
+      <Grid container onClick={handleDoubleClick}>
+        <Grid item xs={6}>
+          {!editActive && <h2>{playlist.name}</h2>}
+          {editActive && (
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id={"list-" + playlist._id}
+              label="Playlist Name"
+              name="name"
+              autoComplete="Playlist Name"
+              className="list-card"
+              onKeyPress={handleKeyPress}
+              onChange={handleUpdateText}
+              defaultValue={playlist.name}
+              inputProps={{ style: { fontSize: 30 } }}
+              InputLabelProps={{ style: { fontSize: 24 } }}
+              autoFocus
+            />
+          )}
+          <p>By {playlist.ownerName}</p>
+        </Grid>
+        <Grid item xs={6} />
+
+        {isExpanded && (
+          <Grid container onClick={handleDoubleClick}>
+            <Grid item xs={12}>
+              <Box tabIndex="0" sx={{ maxHeight: "300px", overflow: "scroll" }}>
+                <List
+                  id="playlist-cards"
+                  sx={{ width: "100%", bgcolor: "background.paper" }}
+                >
+                  {store.currentList &&
+                    store.currentList.songs.map((song, index) => (
+                      <SongCard
+                        id={"playlist-song-" + index}
+                        key={"playlist-song-" + index}
+                        index={index}
+                        song={song}
+                      />
+                    ))}
+                </List>
+              </Box>
+            </Grid>
+            <Grid item xs={12}>
+              <AddSongButton />
+            </Grid>
+            <Grid item xs={2}>
+              <Button onClick={handleUndo}>Undo</Button>
+            </Grid>
+            <Grid item xs={2}>
+              <Button onClick={handleRedo}>Redo</Button>
+            </Grid>
+            <Grid item xs={2}></Grid>
+            <Grid item xs={2}>
+              <Button onClick={handlePublish}>Publish</Button>
+            </Grid>
+            <Grid item xs={2}>
+              <Button onClick={handleDeleteList}>Delete</Button>
+            </Grid>
+            <Grid item xs={2}>
+              <Button>Duplicate</Button>
+            </Grid>
+          </Grid>
+        )}
+        <Grid item xs={9}></Grid>
+        <Grid item xs={3}>
+          {!isExpanded && <ExpandMoreIcon onClick={expand} />}
+          {isExpanded && <ExpandLessIcon onClick={expand} />}
+        </Grid>
+      </Grid>
+      {modalJSX}
+      <MUIDeleteModal />
     </ListItem>
   );
 
-  if (editActive) {
-    cardElement = (
+  /*if (editActive) {
+    c2 = (
       <TextField
         margin="normal"
         required
         fullWidth
-        id={"list-" + idNamePair._id}
+        id={"list-" + playlist._id}
         label="Playlist Name"
         name="name"
         autoComplete="Playlist Name"
         className="list-card"
         onKeyPress={handleKeyPress}
         onChange={handleUpdateText}
-        defaultValue={idNamePair.name}
+        defaultValue={playlist.name}
         inputProps={{ style: { fontSize: 48 } }}
         InputLabelProps={{ style: { fontSize: 24 } }}
         autoFocus
       />
     );
-  }
+  }*/
   return cardElement;
 }
 
