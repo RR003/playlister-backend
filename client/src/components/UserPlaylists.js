@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from "react";
 import { GlobalStoreContext } from "../store";
 import ListCard from "./ListCard.js";
-import ListCard2 from "./ListCard2.js";
+import ListCard3 from "./ListCard3.js";
 import Grid from "@mui/material/Grid";
 
 import List from "@mui/material/List";
@@ -34,7 +34,7 @@ const AllPlaylists = () => {
               />
             )) ||
             (playlist.published && (
-              <ListCard2
+              <ListCard3
                 key={playlist._id}
                 playlist={playlist}
                 selected={false}

@@ -31,7 +31,6 @@ const HomeScreen = () => {
   }
   let listCard = "";
   if (store) {
-    console.log(store);
     listCard = (
       <List sx={{ width: "90%", left: "5%", bgcolor: "background.paper" }}>
         {store.idNamePairs.map((playlist) => (

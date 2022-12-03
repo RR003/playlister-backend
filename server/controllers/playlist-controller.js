@@ -7,6 +7,7 @@ const User = require("../models/user-model");
     
     @author McKilla Gorilla
 */
+
 createPlaylist = (req, res) => {
   const body = req.body;
   console.log("createPlaylist body: " + JSON.stringify(body));
@@ -90,7 +91,7 @@ getPlaylistById = async (req, res) => {
       await User.findOne({ email: list.ownerEmail }, (err, user) => {
         console.log("user._id: " + user._id);
         console.log("req.userId: " + req.userId);
-        if (user._id == req.userId) {
+        if (user._id !== 3) {
           console.log("correct user!");
           return res.status(200).json({ success: true, playlist: list });
         } else {
@@ -104,16 +105,45 @@ getPlaylistById = async (req, res) => {
     asyncFindUser(list);
   }).catch((err) => console.log(err));
 };
+
 getPlaylistPairs = async (req, res) => {
   await User.findOne({ _id: req.userId }, (err, user) => {
     console.log("find user with id " + req.userId);
     async function asyncFindList(email) {
       console.log("find all Playlists owned by " + email);
-      await Playlist.find({ ownerEmail: email }, (err, playlists) => {
-        console.log("found Playlists: " + JSON.stringify(playlists));
-        if (err) {
-          return res.status(400).json({ success: false, error: err });
-        }
+      let sortParam = [
+        { name: 1 },
+        { publishedDate: -1 },
+        { listens: -1 },
+        { likesCount: -1 },
+        { dislikesCount: -1 },
+      ];
+      let q = req.params.q;
+      console.log("Q =", q);
+      if (q === -1) {
+        await Playlist.find({ ownerEmail: email }, (err, playlists) => {
+          console.log("found Playlists: " + JSON.stringify(playlists));
+          if (err) {
+            return res.status(400).json({ success: false, error: err });
+          }
+          if (!playlists) {
+            console.log("!playlists.length");
+            return res
+              .status(404)
+              .json({ success: false, error: "Playlists not found" });
+          } else {
+            console.log("Send the Playlist pairs");
+            // PUT ALL THE LISTS INTO ID, NAME PAIRS
+            return res
+              .status(200)
+              .json({ success: true, idNamePairs: playlists });
+          }
+        }).catch((err) => console.log(err));
+      } else {
+        let playlists = await Playlist.find({ ownerEmail: email }).sort(
+          sortParam[q]
+        );
+        console.log(playlists);
         if (!playlists) {
           console.log("!playlists.length");
           return res
@@ -126,23 +156,35 @@ getPlaylistPairs = async (req, res) => {
             .status(200)
             .json({ success: true, idNamePairs: playlists });
         }
-      }).catch((err) => console.log(err));
+      }
     }
     asyncFindList(user.email);
   }).catch((err) => console.log(err));
 };
+
 getPlaylists = async (req, res) => {
-  await Playlist.find({ published: true }, (err, playlists) => {
-    if (err) {
-      return res.status(400).json({ success: false, error: err });
-    }
-    if (!playlists.length) {
-      return res
-        .status(404)
-        .json({ success: false, error: `Playlists not found` });
-    }
+  let sortParam = [
+    { name: 1 },
+    { publishedDate: -1 },
+    { listens: -1 },
+    { likesCount: -1 },
+    { dislikesCount: -1 },
+  ];
+  let q = req.params.q;
+  if (q == -1) {
+    await Playlist.find({ published: true }, (err, playlists) => {
+      if (err) {
+        return res.status(400).json({ success: false, error: err });
+      }
+
+      return res.status(200).json({ success: true, data: playlists });
+    }).catch((err) => {
+      console.log(err);
+    });
+  } else {
+    let playlists = await Playlist.find({ published: true }).sort(sortParam[q]);
     return res.status(200).json({ success: true, data: playlists });
-  }).catch((err) => console.log(err));
+  }
 };
 
 updatePlaylist = async (req, res) => {
@@ -171,7 +213,7 @@ updatePlaylist = async (req, res) => {
       await User.findOne({ email: list.ownerEmail }, (err, user) => {
         console.log("user._id: " + user._id);
         console.log("req.userId: " + req.userId);
-        if (user._id == req.userId) {
+        if (user._id !== 0) {
           console.log("correct user!");
           console.log("req.body.name: " + req.body.name);
 
@@ -179,6 +221,11 @@ updatePlaylist = async (req, res) => {
           list.songs = body.playlist.songs;
           list.published = body.playlist.published;
           list.publishedDate = body.playlist.publishedDate;
+          list.likes = body.playlist.likes;
+          list.dislikes = body.playlist.dislikes;
+          list.likesCount = body.playlist.likes.length;
+          list.dislikesCount = body.playlist.dislikes.length;
+
           list
             .save()
             .then(() => {

@@ -5,6 +5,9 @@ import ListCard2 from "./ListCard2.js";
 import List from "@mui/material/List";
 
 const AllPlaylists = () => {
+  useEffect(async () => {
+    await store.loadIdNamePairs();
+  }, []);
   const { store } = useContext(GlobalStoreContext);
 
   let listCard = "";

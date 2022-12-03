@@ -93,6 +93,19 @@ function ListCard(props) {
     setText(event.target.value);
   }
 
+  const handleKeyDown = async (event) => {
+    console.log("key downnnnn");
+    if (event.keyCode === 90 && event.ctrlKey) {
+      let res = await store.canUndo();
+      if (res) await store.undo();
+    }
+
+    if (event.keyCode === 89 && event.ctrlKey) {
+      let res = await store.canRedo();
+      if (res) await store.redo();
+    }
+  };
+
   let selectClass = "unselected-list-card";
   if (selected) {
     selectClass = "selected-list-card";
@@ -102,10 +115,12 @@ function ListCard(props) {
     cardStatus = true;
   }
   let modalJSX = "";
-  if (store.isEditSongModalOpen()) {
-    modalJSX = <MUIEditSongModal />;
-  } else if (store.isRemoveSongModalOpen()) {
+  if (store.isRemoveSongModalOpen()) {
+    console.log(store.removeSong);
     modalJSX = <MUIRemoveSongModal />;
+  } else if (store.isEditSongModalOpen()) {
+    console.log("edit song modal is open");
+    modalJSX = <MUIEditSongModal />;
   }
 
   function handleUndo() {
@@ -125,6 +140,11 @@ function ListCard(props) {
     expand();
   }
 
+  async function handleDuplicate() {
+    store.duplicateOwnList(playlist);
+    expand();
+  }
+
   let cardElement = (
     <ListItem
       id={playlist._id}
@@ -138,7 +158,12 @@ function ListCard(props) {
       }}
       button
     >
-      <Grid container onClick={handleDoubleClick}>
+      <Grid
+        container
+        onClick={handleDoubleClick}
+        onKeyDown={handleKeyDown}
+        tabIndex="0"
+      >
         <Grid item xs={6}>
           {!editActive && <h2>{playlist.name}</h2>}
           {editActive && (
@@ -200,7 +225,7 @@ function ListCard(props) {
               <Button onClick={handleDeleteList}>Delete</Button>
             </Grid>
             <Grid item xs={2}>
-              <Button>Duplicate</Button>
+              <Button onClick={handleDuplicate}>Duplicate</Button>
             </Grid>
           </Grid>
         )}
@@ -215,26 +240,6 @@ function ListCard(props) {
     </ListItem>
   );
 
-  /*if (editActive) {
-    c2 = (
-      <TextField
-        margin="normal"
-        required
-        fullWidth
-        id={"list-" + playlist._id}
-        label="Playlist Name"
-        name="name"
-        autoComplete="Playlist Name"
-        className="list-card"
-        onKeyPress={handleKeyPress}
-        onChange={handleUpdateText}
-        defaultValue={playlist.name}
-        inputProps={{ style: { fontSize: 48 } }}
-        InputLabelProps={{ style: { fontSize: 24 } }}
-        autoFocus
-      />
-    );
-  }*/
   return cardElement;
 }
 

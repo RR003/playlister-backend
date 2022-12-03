@@ -42,6 +42,7 @@ function SongCard(props) {
     await store.addMoveSongTransaction(index2, index1);
   }
   function handleRemoveSong(event) {
+    console.log("remove song?");
     store.showRemoveSongModal(index, song);
   }
   function handleClick(event) {

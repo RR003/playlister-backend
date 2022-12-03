@@ -31,18 +31,22 @@ export const createPlaylist = (newListName, newSongs, userEmail, ownerName) => {
     ownerName: ownerName,
     published: false,
     publishedDate: null,
+    likes: [],
+    dislikes: [],
+    likesCount: 0,
+    dislikesCount: 0,
   });
 };
 export const deletePlaylistById = (id) => api.delete(`/playlist/${id}`);
 export const getPlaylistById = (id) => api.get(`/playlist/${id}`);
-export const getPlaylistPairs = () => api.get(`/playlistpairs/`);
+export const getPlaylistPairs = (id) => api.get(`/playlistpairs/${id}`);
 export const updatePlaylistById = (id, playlist) => {
   return api.put(`/playlist/${id}`, {
     // SPECIFY THE PAYLOAD
     playlist: playlist,
   });
 };
-export const getAllPlaylists = () => api.get("/playlists");
+export const getAllPlaylists = (q) => api.get(`/playlists/${q}`);
 
 const apis = {
   createPlaylist,
