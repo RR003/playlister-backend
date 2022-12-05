@@ -3,11 +3,13 @@ import { GlobalStoreContext } from "../store";
 import ListCard from "./ListCard.js";
 import ListCard3 from "./ListCard3.js";
 import Grid from "@mui/material/Grid";
+import AuthContext from "../auth";
 
 import List from "@mui/material/List";
 
 const AllPlaylists = () => {
   const { store } = useContext(GlobalStoreContext);
+  const { auth } = useContext(AuthContext);
 
   useEffect(async () => {
     await store.loadIdNamePairs();
@@ -53,7 +55,12 @@ const AllPlaylists = () => {
   return (
     <div>
       <h1>Your Playlists</h1>
-      <div id="list-selector-list">{listCard}</div>
+      {auth.user !== null && <div id="list-selector-list">{listCard}</div>}
+      {auth.user === null && (
+        <div id="list-selector-list">
+          <h1>Create an account to make your own playlists!</h1>
+        </div>
+      )}
     </div>
   );
 };

@@ -39,14 +39,25 @@ export const createPlaylist = (newListName, newSongs, userEmail, ownerName) => {
 };
 export const deletePlaylistById = (id) => api.delete(`/playlist/${id}`);
 export const getPlaylistById = (id) => api.get(`/playlist/${id}`);
-export const getPlaylistPairs = (id) => api.get(`/playlistpairs/${id}`);
+export const getPlaylistPairs = (id, search) =>
+  api.get(`/playlistpairs/${id}`, {
+    params: {
+      search: search,
+    },
+  });
 export const updatePlaylistById = (id, playlist) => {
   return api.put(`/playlist/${id}`, {
     // SPECIFY THE PAYLOAD
     playlist: playlist,
   });
 };
-export const getAllPlaylists = (q) => api.get(`/playlists/${q}`);
+export const getAllPlaylists = (q, search) => {
+  return api.get(`/playlists/${q}`, {
+    params: {
+      search: search,
+    },
+  });
+};
 
 const apis = {
   createPlaylist,

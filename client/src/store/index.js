@@ -195,7 +195,7 @@ function GlobalStoreContextProvider(props) {
           listIdMarkedForDeletion: null,
           listMarkedForDeletion: null,
           sortQuery: payload.sortQuery,
-          searchQuery: store.searchQuery,
+          searchQuery: payload.searchQuery,
         });
       }
 
@@ -313,12 +313,12 @@ function GlobalStoreContextProvider(props) {
       }
       case GlobalStoreActionType.LIKE: {
         return setStore({
-          currentModal: CurrentModal.EDIT_SONG,
+          currentModal: CurrentModal.NONE,
           idNamePairs: store.idNamePairs,
           allPlaylists: store.allPlaylists,
           currentList: store.currentList,
-          currentSongIndex: payload.currentSongIndex,
-          currentSong: payload.currentSong,
+          currentSongIndex: -1,
+          currentSong: null,
           deleteSongIndex: -1,
           deleteSong: null,
           newListCounter: store.newListCounter,
@@ -526,7 +526,7 @@ function GlobalStoreContextProvider(props) {
   };
 
   store.likePlaylist = async function (id, type) {
-    console.log("liking playlist");
+    if (auth.user === null) return;
     async function getListToDelete(id) {
       let response = await api.getPlaylistById(id);
       if (response.data.success) {
@@ -560,7 +560,7 @@ function GlobalStoreContextProvider(props) {
   };
 
   store.dislikePlaylist = async function (id, type) {
-    console.log("disliking playlist");
+    if (auth.user === null) return;
     async function getListToDelete(id) {
       let response = await api.getPlaylistById(id);
       if (response.data.success) {
@@ -600,10 +600,20 @@ function GlobalStoreContextProvider(props) {
 
   // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS
   store.loadIdNamePairs = async function () {
-    const response = await api.getPlaylistPairs(store.sortQuery);
-    const response2 = await api.getAllPlaylists(store.sortQuery);
-    if (response.data.success) {
-      let pairsArray = response.data.idNamePairs;
+    let response = [];
+    if (auth.user !== null) {
+      response = await api.getPlaylistPairs(store.sortQuery, store.searchQuery);
+    }
+
+    const response2 = await api.getAllPlaylists(
+      store.sortQuery,
+      store.searchQuery,
+      1
+    );
+    if (response2.data.success) {
+      let pairsArray = [];
+      if (auth.user !== null) pairsArray = response.data.idNamePairs;
+
       // console.log(pairsArray);
       let pairsArray2 = response2.data.data;
       //console.log(pairsArray2);
@@ -613,6 +623,7 @@ function GlobalStoreContextProvider(props) {
           idNamePairs: pairsArray,
           allPlaylists: pairsArray2,
           sortQuery: store.sortQuery,
+          searchQuery: store.searchQuery,
         },
       });
     } else {
@@ -620,13 +631,17 @@ function GlobalStoreContextProvider(props) {
     }
   };
 
-  store.loadIdNamePairs2 = async function (query) {
-    const response = await api.getPlaylistPairs(query);
-    console.log(store);
-    const response2 = await api.getAllPlaylists(query);
-    if (response.data.success) {
-      let pairsArray = response.data.idNamePairs;
-      console.log(pairsArray);
+  store.loadIdNamePairs2 = async function (query, query2) {
+    let response = [];
+    if (auth.user !== null) {
+      response = await api.getPlaylistPairs(store.sortQuery, store.searchQuery);
+    }
+
+    const response2 = await api.getAllPlaylists(query, query2);
+    if (response2.data.success) {
+      let pairsArray = [];
+      if (auth.user !== null) pairsArray = response.data.idNamePairs;
+
       let pairsArray2 = response2.data.data;
       //console.log(pairsArray2);
       await storeReducer({
@@ -635,6 +650,7 @@ function GlobalStoreContextProvider(props) {
           idNamePairs: pairsArray,
           allPlaylists: pairsArray2,
           sortQuery: query,
+          searchQuery: query2,
         },
       });
     } else {

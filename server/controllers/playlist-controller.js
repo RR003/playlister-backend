@@ -120,29 +120,37 @@ getPlaylistPairs = async (req, res) => {
       ];
       let q = req.params.q;
       console.log("Q =", q);
+      let searchParam = req.query.search;
+      if (searchParam === undefined) {
+        searchParam = "";
+      }
+      let regexp = new RegExp(searchParam);
       if (q === -1) {
-        await Playlist.find({ ownerEmail: email }, (err, playlists) => {
-          console.log("found Playlists: " + JSON.stringify(playlists));
-          if (err) {
-            return res.status(400).json({ success: false, error: err });
+        await Playlist.find(
+          { ownerEmail: email, name: regexp },
+          (err, playlists) => {
+            if (err) {
+              return res.status(400).json({ success: false, error: err });
+            }
+            if (!playlists) {
+              console.log("!playlists.length");
+              return res
+                .status(404)
+                .json({ success: false, error: "Playlists not found" });
+            } else {
+              console.log("Send the Playlist pairs");
+              // PUT ALL THE LISTS INTO ID, NAME PAIRS
+              return res
+                .status(200)
+                .json({ success: true, idNamePairs: playlists });
+            }
           }
-          if (!playlists) {
-            console.log("!playlists.length");
-            return res
-              .status(404)
-              .json({ success: false, error: "Playlists not found" });
-          } else {
-            console.log("Send the Playlist pairs");
-            // PUT ALL THE LISTS INTO ID, NAME PAIRS
-            return res
-              .status(200)
-              .json({ success: true, idNamePairs: playlists });
-          }
-        }).catch((err) => console.log(err));
+        ).catch((err) => console.log(err));
       } else {
-        let playlists = await Playlist.find({ ownerEmail: email }).sort(
-          sortParam[q]
-        );
+        let playlists = await Playlist.find({
+          ownerEmail: email,
+          name: regexp,
+        }).sort(sortParam[q]);
         console.log(playlists);
         if (!playlists) {
           console.log("!playlists.length");
@@ -171,8 +179,17 @@ getPlaylists = async (req, res) => {
     { dislikesCount: -1 },
   ];
   let q = req.params.q;
+  // let type = req.query.type;
+  let searchParam = req.query.search;
+
+  if (searchParam === undefined) {
+    searchParam = "";
+  }
+
+  let regexp = new RegExp("^" + searchParam);
   if (q == -1) {
-    await Playlist.find({ published: true }, (err, playlists) => {
+    await Playlist.find({ published: true, name: regexp }, (err, playlists) => {
+      console.log("PLAYLISTS = ", playlists);
       if (err) {
         return res.status(400).json({ success: false, error: err });
       }
@@ -182,7 +199,11 @@ getPlaylists = async (req, res) => {
       console.log(err);
     });
   } else {
-    let playlists = await Playlist.find({ published: true }).sort(sortParam[q]);
+    let playlists = await Playlist.find({
+      published: true,
+      name: regexp,
+    }).sort(sortParam[q]);
+    console.log("PLAYLISTS = ", playlists);
     return res.status(200).json({ success: true, data: playlists });
   }
 };

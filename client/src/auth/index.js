@@ -16,6 +16,7 @@ export const AuthActionType = {
   HOME: "HOME",
   ALL_LISTS: "ALL_LISTS",
   USERS: "USERS",
+  GUEST: "GUEST",
 };
 
 function AuthContextProvider(props) {
@@ -51,6 +52,17 @@ function AuthContextProvider(props) {
       case AuthActionType.LOGIN_USER: {
         return setAuth({
           user: payload.user,
+          loggedIn: true,
+          e: auth.e,
+          message: auth.message,
+          home: true,
+          allLists: false,
+          users: false,
+        });
+      }
+      case AuthActionType.GUEST: {
+        return setAuth({
+          user: null,
           loggedIn: true,
           e: auth.e,
           message: auth.message,
@@ -192,6 +204,12 @@ function AuthContextProvider(props) {
   auth.hideErrorModal = async function () {
     authReducer({
       type: AuthActionType.HIDE_ERROR_MODAL,
+    });
+  };
+
+  auth.continueAsGuest = async function () {
+    authReducer({
+      type: AuthActionType.GUEST,
     });
   };
 

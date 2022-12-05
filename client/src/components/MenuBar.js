@@ -38,11 +38,30 @@ export default function MenuBar() {
     setSearch("");
   };
   const handleUsers = () => {
-    auth.goUsers();
+    auth.goAllLists();
     setSort("");
     store.updateQueries(-1, "");
     setMenu(2);
     setSearch("");
+  };
+
+  const handleSearch = (e) => {
+    if (e.keyCode === 13) {
+      let arr = [
+        "Name (A-Z)",
+        "Publish Date (Newest)",
+        "Listens (High - Low)",
+        "Likes (High - Low)",
+        "Dislikes (High - Low)",
+      ];
+      let index = arr.indexOf(sort);
+      console.log(e.target.value);
+      setSearch(e.target.value);
+      store.updateQueries(index, e.target.value).then((event) => {
+        // console.log(menu);
+        store.loadIdNamePairs2(index, e.target.value);
+      });
+    }
   };
 
   const handleChange = async (event) => {
@@ -55,9 +74,9 @@ export default function MenuBar() {
       "Dislikes (High - Low)",
     ];
     let index = arr.indexOf(event.target.value);
-    store.updateQueries(index, "").then((e) => {
+    store.updateQueries(index, search).then((e) => {
       console.log(menu);
-      store.loadIdNamePairs2(index);
+      store.loadIdNamePairs2(index, search);
     });
 
     //await store.loadIdNamePairs();
@@ -85,6 +104,7 @@ export default function MenuBar() {
               variant="outlined"
               placeholder="Search..."
               size="small"
+              onKeyDown={handleSearch}
             />
             <IconButton type="submit" aria-label="search">
               <SearchIcon style={{ fill: "blue" }} />

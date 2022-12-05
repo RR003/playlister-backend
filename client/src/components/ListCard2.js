@@ -35,14 +35,17 @@ function ListCard2(props) {
 
   useEffect(() => {
     console.log(auth);
-    let index = playlist.likes.indexOf(auth.user.email);
-    if (index > -1) {
-      setLiked(true);
-    }
+    console.log(store);
+    if (auth.user !== null) {
+      let index = playlist.likes.indexOf(auth.user.email);
+      if (index > -1) {
+        setLiked(true);
+      }
 
-    index = playlist.dislikes.indexOf(auth.user.email);
-    if (index > -1) {
-      setDisliked(true);
+      index = playlist.dislikes.indexOf(auth.user.email);
+      if (index > -1) {
+        setDisliked(true);
+      }
     }
   });
 
@@ -81,6 +84,7 @@ function ListCard2(props) {
   }
 
   async function handleLike() {
+    if (auth.user === null) return;
     if (!disliked) {
       await store.likePlaylist(playlist._id, 1);
       setLiked(true);
@@ -88,11 +92,13 @@ function ListCard2(props) {
   }
 
   async function handleUnLike() {
+    if (auth.user === null) return;
     await store.dislikePlaylist(playlist._id, 1);
     setLiked(false);
   }
 
   async function handleDislike() {
+    if (auth.user === null) return;
     if (!liked) {
       await store.likePlaylist(playlist._id, 2);
       setDisliked(true);
@@ -100,6 +106,7 @@ function ListCard2(props) {
   }
 
   async function handleUnDislike() {
+    if (auth.user === null) return;
     await store.dislikePlaylist(playlist._id, 2);
     setDisliked(false);
   }
@@ -189,7 +196,9 @@ function ListCard2(props) {
                 </List>
               </Box>
             </Grid>
-            <Button onClick={handleDuplicate}>Duplicate</Button>
+            {auth.user !== null && (
+              <Button onClick={handleDuplicate}>Duplicate</Button>
+            )}
           </Grid>
         )}
         <Grid item xs={6}>
