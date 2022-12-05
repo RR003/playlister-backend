@@ -6,6 +6,7 @@ import MUIDeleteModal from "./MUIDeleteModal";
 import MenuBar from "./MenuBar";
 import AllPlaylists from "./AllPlaylists";
 import UserPlaylists from "./UserPlaylists";
+import YouTubePlayer from "./YouTubePlayer";
 
 import AddIcon from "@mui/icons-material/Add";
 import Fab from "@mui/material/Fab";
@@ -49,7 +50,7 @@ const HomeScreen = () => {
           {auth.home && <UserPlaylists />}
         </div>
         <div className="right">
-          <h3>Youtube Player goes here</h3>
+          <YouTubePlayer />
         </div>
       </div>
 

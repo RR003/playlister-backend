@@ -19,7 +19,7 @@ const AllPlaylists = () => {
   let cardClass = "list-card unselected-list-card";
 
   async function handleNewPlaylist() {
-    await store.createNewList();
+    if (store.currentList === null) await store.createNewList();
   }
 
   if (store) {

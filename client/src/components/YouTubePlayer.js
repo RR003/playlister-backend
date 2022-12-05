@@ -1,90 +1,96 @@
-let player;
-let PLAYER_NAME = "youtube_player";
+import YouTube from "react-youtube";
+import { useContext, useState, useEffect } from "react";
+import { GlobalStoreContext } from "../store";
+import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
+import StopIcon from "@mui/icons-material/Stop";
+import SkipNextIcon from "@mui/icons-material/SkipNext";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import Grid from "@mui/material/Grid";
 
-// THIS HAS THE YOUTUBE IDS FOR THE SONGS IN OUR PLAYLIST
-let playlist = ["mqmxkGjow1A", "8RbXIMZmVv8", "8UbNbor3OqQ"];
+export default function YouTubePlayer() {
+  const { store } = useContext(GlobalStoreContext);
 
-let currentSong;
+  useEffect(async () => {
+    console.log(store);
+  }, [store]);
 
-// DYNAMICALLY LOAD THE YOUTUBE API FOR USE
-let tag = document.createElement("script");
-tag.src = "https://www.youtube.com/iframe_api";
-let firstScriptTag = document.getElementsByTagName("script")[0];
-firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-function YouTubePlayer() {
-  function onYouTubeIframeAPIReady() {
-    // START OUR PLAYLIST AT THE BEGINNING
-    currentSong = 0;
-
-    // NOW MAKE OUR PLAYER WITH OUR DESIRED PROPERTIES
-    if (currentSong >= 0) {
-      player = new YT.Player(PLAYER_NAME, {
-        height: "390",
-        width: "640",
-        playerVars: {
-          playsinline: 1,
-          origin: "https://www.youtube.com",
-        },
-        events: {
-          // NOTE OUR EVENT HANDLER FUNCTIONS HERE
-          onReady: onPlayerReady,
-          onStateChange: onPlayerStateChange,
-        },
-      });
-    }
-  }
-
-  function onPlayerReady(event) {
-    loadAndPlayCurrentSong();
-    event.target.playVideo();
-  }
-
-  function loadAndPlayCurrentSong() {
-    let song = playlist[currentSong];
+  async function loadAndPlayCurrentSong(player) {
+    let song = store.currentList.songs[store.currentPlayIndex].youTubeId;
     player.loadVideoById(song);
     player.playVideo();
   }
 
-  function incSong() {
-    currentSong++;
-    currentSong = currentSong % playlist.length;
+  async function incSong() {
+    // setIndex((index + 1) % store.currentList.songs.length);
+    await store.updatePlaySong(
+      (store.currentPlayIndex + 1) % store.currentList.songs.length
+    );
   }
 
-  function onPlayerStateChange(event) {
+  async function decSong() {
+    if (store.currentPlayIndex - 1 == -1) {
+      await store.updatePlaySong(store.currentList.songs.length - 1);
+    } else {
+      await store.updatePlaySong(
+        (store.currentPlayIndex - 1) % store.currentList.songs.length
+      );
+    }
+  }
+
+  function onPlayerReady(event) {
+    loadAndPlayCurrentSong(event.target);
+    event.target.playVideo();
+  }
+
+  async function onPlayerStateChange(event) {
     let playerStatus = event.data;
-    let color;
-    if (playerStatus == -1) {
-      // VIDEO UNSTARTED
-      color = "#37474F";
-      console.log("-1 Video unstarted");
-    } else if (playerStatus == 0) {
-      // THE VIDEO HAS COMPLETED PLAYING
-      color = "#FFFF00";
-      console.log("0 Video ended");
-      incSong();
-      loadAndPlayCurrentSong();
-    } else if (playerStatus == 1) {
-      // THE VIDEO IS PLAYED
-      color = "#33691E";
-      console.log("1 Video played");
-    } else if (playerStatus == 2) {
-      // THE VIDEO IS PAUSED
-      color = "#DD2C00";
-      console.log("2 Video paused");
-    } else if (playerStatus == 3) {
-      // THE VIDEO IS BUFFERING
-      color = "#AA00FF";
-      console.log("3 Video buffering");
-    } else if (playerStatus == 5) {
-      // THE VIDEO HAS BEEN CUED
-      color = "#FF6DOO";
-      console.log("5 Video cued");
-    }
-    if (color) {
-      document.getElementById(PLAYER_NAME).style.borderColor = color;
+    let player = event.target;
+    if (playerStatus === 0) {
+      await incSong();
+      loadAndPlayCurrentSong(player);
     }
   }
 
-  return <div></div>;
+  const opts = {
+    height: "300",
+    width: "500",
+    playerVars: {
+      // https://developers.google.com/youtube/player_parameters
+      autoplay: 1,
+    },
+  };
+  return (
+    store.currentList &&
+    store.currentList.songs.length > 0 && (
+      <div>
+        <YouTube
+          videoId={store.currentList.songs[store.currentPlayIndex].youTubeId}
+          opts={opts}
+          onReady={onPlayerReady}
+          onStateChange={onPlayerStateChange}
+        />
+        <h3>Playlist: {store.currentList.name}</h3>
+        <h3>Song #: {store.currentPlayIndex + 1}</h3>
+        <h3>Title: {store.currentList.songs[store.currentPlayIndex].title}</h3>
+        <h3>
+          Artist: {store.currentList.songs[store.currentPlayIndex].artist}
+        </h3>
+        <Grid container>
+          <Grid xs={2}></Grid>
+          <Grid xs={2}>
+            <SkipPreviousIcon onClick={decSong} />
+          </Grid>
+          <Grid xs={2}>
+            <StopIcon />
+          </Grid>
+          <Grid xs={2}>
+            <PlayArrowIcon />
+          </Grid>
+          <Grid xs={2}>
+            <SkipNextIcon onClick={incSong} />
+          </Grid>
+        </Grid>
+      </div>
+    )
+  );
 }

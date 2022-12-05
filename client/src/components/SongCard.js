@@ -1,5 +1,6 @@
 import React, { useContext, useState } from "react";
 import { GlobalStoreContext } from "../store";
+import Grid from "@mui/material/Grid";
 
 function SongCard(props) {
   const { store } = useContext(GlobalStoreContext);
@@ -46,43 +47,46 @@ function SongCard(props) {
     store.showRemoveSongModal(index, song);
   }
   function handleClick(event) {
-    // DOUBLE CLICK IS FOR SONG EDITING
+    console.log(event.target);
     if (event.detail === 2) {
       console.log("double click");
       store.showEditSongModal(index, song);
+    } else {
+      store.updatePlaySong(index);
     }
   }
 
   let cardClass = "list-card unselected-list-card";
+  if (index === store.currentPlayIndex)
+    cardClass = "list-card selected-list-card";
   return (
-    <div
-      key={index}
-      id={"song-" + index + "-card"}
-      className={cardClass}
-      onDragStart={handleDragStart}
-      onDragOver={handleDragOver}
-      onDragEnter={handleDragEnter}
-      onDragLeave={handleDragLeave}
-      onDrop={handleDrop}
-      draggable="true"
-      onClick={handleClick}
-    >
-      {index + 1}.
-      <a
-        id={"song-" + index + "-link"}
-        className="song-link"
-        href={"https://www.youtube.com/watch?v=" + song.youTubeId}
-      >
-        {song.title} by {song.artist}
-      </a>
-      <input
-        type="button"
-        id={"remove-song-" + index}
-        className="list-card-button"
-        value={"\u2715"}
-        onClick={handleRemoveSong}
-      />
-    </div>
+    <Grid container>
+      <Grid xs={10}>
+        <div
+          key={index}
+          id={"song-" + index + "-card"}
+          className={cardClass}
+          onDragStart={handleDragStart}
+          onDragOver={handleDragOver}
+          onDragEnter={handleDragEnter}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+          draggable="true"
+          onClick={handleClick}
+        >
+          {index + 1}.{song.title} by {song.artist}
+        </div>
+      </Grid>
+      <Grid xs={2}>
+        <input
+          type="button"
+          id={"remove-song-" + index}
+          className="list-card-button"
+          value={"\u2715"}
+          onClick={handleRemoveSong}
+        />
+      </Grid>
+    </Grid>
   );
 }
 

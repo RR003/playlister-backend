@@ -122,13 +122,16 @@ function ListCard2(props) {
     setText(event.target.value);
   }
 
-  function expand() {
+  async function expand() {
     if (!isExpanded) {
-      console.log(playlist);
+      if (store.currentList === null) {
+        setIsExpanded(!isExpanded);
+        await store.setCurrentList(playlist._id);
+      }
     } else {
-      console.log("nothing");
+      setIsExpanded(!isExpanded);
+      await store.closeCurrentList();
     }
-    setIsExpanded(!isExpanded);
   }
 
   async function handleDuplicate() {

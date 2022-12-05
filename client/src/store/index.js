@@ -18,9 +18,6 @@ import AuthContext from "../auth";
 export const GlobalStoreContext = createContext({});
 console.log("create GlobalStoreContext");
 
-let sortQuery = -1;
-let searchQuery = "";
-
 // THESE ARE ALL THE TYPES OF UPDATES TO OUR GLOBAL
 // DATA STORE STATE THAT CAN BE PROCESSED
 export const GlobalStoreActionType = {
@@ -40,6 +37,7 @@ export const GlobalStoreActionType = {
   PUBLISH_LIST: "PUBLISH_LIST",
   LIKE: "LIKE",
   UPDATE_QUERIES: "UPDATE_QUERIES",
+  UPDATE_PLAY_SONG: "UPDATE_PLAY_SONG",
 };
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -71,6 +69,7 @@ function GlobalStoreContextProvider(props) {
     deleteSongIndex: -1,
     sortQuery: -1,
     searchQuery: "",
+    currentPlayIndex: null,
   });
   const history = useHistory();
 
@@ -102,6 +101,7 @@ function GlobalStoreContextProvider(props) {
           listMarkedForDeletion: null,
           sortQuery: store.sortQuery,
           searchQuery: store.searchQuery,
+          currentPlayIndex: store.currentPlayIndex,
         });
       }
       // STOP EDITING THE CURRENT LIST
@@ -121,6 +121,7 @@ function GlobalStoreContextProvider(props) {
           listMarkedForDeletion: null,
           sortQuery: store.sortQuery,
           searchQuery: store.searchQuery,
+          currentPlayIndex: -1,
         });
       }
       // CREATE A NEW LIST
@@ -140,6 +141,7 @@ function GlobalStoreContextProvider(props) {
           listMarkedForDeletion: null,
           sortQuery: store.sortQuery,
           searchQuery: store.searchQuery,
+          currentPlayIndex: store.currentPlayIndex,
         });
       }
       case GlobalStoreActionType.PUBLISH_LIST: {
@@ -158,6 +160,7 @@ function GlobalStoreContextProvider(props) {
           listMarkedForDeletion: null,
           sortQuery: store.sortQuery,
           searchQuery: store.searchQuery,
+          currentPlayIndex: store.currentPlayIndex,
         });
       }
       // GET ALL THE LISTS SO WE CAN PRESENT THEM
@@ -177,6 +180,7 @@ function GlobalStoreContextProvider(props) {
           listMarkedForDeletion: null,
           sortQuery: payload.sortQuery,
           searchQuery: store.searchQuery,
+          currentPlayIndex: store.currentPlayIndex,
         });
       }
 
@@ -196,6 +200,7 @@ function GlobalStoreContextProvider(props) {
           listMarkedForDeletion: null,
           sortQuery: payload.sortQuery,
           searchQuery: payload.searchQuery,
+          currentPlayIndex: store.currentPlayIndex,
         });
       }
 
@@ -215,6 +220,7 @@ function GlobalStoreContextProvider(props) {
           listMarkedForDeletion: null,
           sortQuery: store.sortQuery,
           searchQuery: store.searchQuery,
+          currentPlayIndex: store.currentPlayIndex,
         });
       }
       // PREPARE TO DELETE A LIST
@@ -234,6 +240,7 @@ function GlobalStoreContextProvider(props) {
           listMarkedForDeletion: payload.playlist,
           sortQuery: store.sortQuery,
           searchQuery: store.searchQuery,
+          currentPlayIndex: store.currentPlayIndex,
         });
       }
       case GlobalStoreActionType.UNMARK_LIST_FOR_DELETION: {
@@ -252,6 +259,7 @@ function GlobalStoreContextProvider(props) {
           listMarkedForDeletion: null,
           sortQuery: store.sortQuery,
           searchQuery: store.searchQuery,
+          currentPlayIndex: store.currentPlayIndex,
         });
       }
       // UPDATE A LIST
@@ -271,6 +279,7 @@ function GlobalStoreContextProvider(props) {
           listMarkedForDeletion: null,
           sortQuery: store.sortQuery,
           searchQuery: store.searchQuery,
+          currentPlayIndex: 0,
         });
       }
       // START EDITING A LIST NAME
@@ -290,6 +299,7 @@ function GlobalStoreContextProvider(props) {
           listMarkedForDeletion: null,
           sortQuery: store.sortQuery,
           searchQuery: store.searchQuery,
+          currentPlayIndex: store.currentPlayIndex,
         });
       }
       //
@@ -309,6 +319,7 @@ function GlobalStoreContextProvider(props) {
           listMarkedForDeletion: null,
           sortQuery: store.sortQuery,
           searchQuery: store.searchQuery,
+          currentPlayIndex: store.currentPlayIndex,
         });
       }
       case GlobalStoreActionType.LIKE: {
@@ -327,6 +338,7 @@ function GlobalStoreContextProvider(props) {
           listMarkedForDeletion: null,
           sortQuery: store.sortQuery,
           searchQuery: store.searchQuery,
+          currentPlayIndex: store.currentPlayIndex,
         });
       }
       case GlobalStoreActionType.REMOVE_SONG: {
@@ -345,6 +357,7 @@ function GlobalStoreContextProvider(props) {
           listMarkedForDeletion: null,
           sortQuery: store.sortQuery,
           searchQuery: store.searchQuery,
+          currentPlayIndex: store.currentPlayIndex,
         });
       }
       case GlobalStoreActionType.HIDE_MODALS: {
@@ -363,6 +376,7 @@ function GlobalStoreContextProvider(props) {
           listMarkedForDeletion: null,
           sortQuery: store.sortQuery,
           searchQuery: store.searchQuery,
+          currentPlayIndex: store.currentPlayIndex,
         });
       }
       case GlobalStoreActionType.UPDATE_QUERIES: {
@@ -381,11 +395,38 @@ function GlobalStoreContextProvider(props) {
           listMarkedForDeletion: null,
           sortQuery: payload.sort,
           searchQuery: payload.search,
+          currentPlayIndex: store.currentPlayIndex,
+        });
+      }
+      case GlobalStoreActionType.UPDATE_PLAY_SONG: {
+        return setStore({
+          currentModal: CurrentModal.NONE,
+          idNamePairs: store.idNamePairs,
+          allPlaylists: store.allPlaylists,
+          currentList: store.currentList,
+          currentSongIndex: -1,
+          currentSong: null,
+          deleteSongIndex: -1,
+          deleteSong: null,
+          newListCounter: store.newListCounter,
+          listNameActive: false,
+          listIdMarkedForDeletion: null,
+          listMarkedForDeletion: null,
+          sortQuery: store.sort,
+          searchQuery: store.search,
+          currentPlayIndex: payload,
         });
       }
       default:
         return store;
     }
+  };
+
+  store.updatePlaySong = async function (index) {
+    storeReducer({
+      type: GlobalStoreActionType.UPDATE_PLAY_SONG,
+      payload: index,
+    });
   };
 
   store.updateQueries = async function (query1, query2) {

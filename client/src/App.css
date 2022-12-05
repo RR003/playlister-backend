@@ -186,8 +186,8 @@ body {
 }
 
 .list-card-button {
-  float: right;
-  transform: scale(2);
+  margin: 10px;
+  padding: 20px;
 }
 
 #workspace-home,
@@ -268,8 +268,15 @@ input {
   display: flex;
 }
 
+.delete-song-button {
+  right: 0;
+}
+
 .left {
   flex: 0.6;
+  max-height: 500px;
+  scroll-behaviour: smooth;
+  overflow: scroll;
 }
 
 .right {

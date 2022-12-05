@@ -51,7 +51,7 @@ function ListCard(props) {
   }
 
   function handleDoubleClick(event) {
-    console.log(event);
+    console.log(event.target);
     if (event.detail === 2) {
       console.log("double click");
       setEditActive(true);

@@ -100,7 +100,7 @@ export default function MenuBar() {
             <TextField
               id="search-bar"
               className="text"
-              label="Enter a city name"
+              label="Search"
               variant="outlined"
               placeholder="Search..."
               size="small"

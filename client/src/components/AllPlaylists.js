@@ -24,7 +24,7 @@ const AllPlaylists = () => {
 
   return (
     <div>
-      <h1>All Of the Playlists</h1>
+      <h1>All Published Playlists</h1>
       <div id="list-selector-list">{listCard}</div>
     </div>
   );
