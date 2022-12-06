@@ -55,7 +55,7 @@ export default function MenuBar() {
         "Dislikes (High - Low)",
       ];
       let index = arr.indexOf(sort);
-      console.log(e.target.value);
+      // console.log(e.target.value);
       setSearch(e.target.value);
       store.updateQueries(index, e.target.value).then((event) => {
         // console.log(menu);

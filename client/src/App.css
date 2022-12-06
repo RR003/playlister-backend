@@ -235,6 +235,11 @@ body {
   color: black;
 }
 
+.add-comment {
+  bottom: 0;
+  width: 100%;
+}
+
 input {
   font-size: 20pt;
 }
@@ -274,7 +279,6 @@ input {
 
 .left {
   flex: 0.6;
-  max-height: 500px;
   scroll-behaviour: smooth;
   overflow: scroll;
 }

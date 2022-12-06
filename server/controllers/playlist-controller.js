@@ -108,9 +108,9 @@ getPlaylistById = async (req, res) => {
 
 getPlaylistPairs = async (req, res) => {
   await User.findOne({ _id: req.userId }, (err, user) => {
-    console.log("find user with id " + req.userId);
+    // console.log("find user with id " + req.userId);
     async function asyncFindList(email) {
-      console.log("find all Playlists owned by " + email);
+      // console.log("find all Playlists owned by " + email);
       let sortParam = [
         { name: 1 },
         { publishedDate: -1 },
@@ -119,8 +119,9 @@ getPlaylistPairs = async (req, res) => {
         { dislikesCount: -1 },
       ];
       let q = req.params.q;
-      console.log("Q =", q);
       let searchParam = req.query.search;
+      console.log("getting user playlists");
+      console.log(searchParam, q);
       if (searchParam === undefined) {
         searchParam = "";
       }
@@ -151,7 +152,6 @@ getPlaylistPairs = async (req, res) => {
           ownerEmail: email,
           name: regexp,
         }).sort(sortParam[q]);
-        console.log(playlists);
         if (!playlists) {
           console.log("!playlists.length");
           return res
@@ -210,8 +210,8 @@ getPlaylists = async (req, res) => {
 
 updatePlaylist = async (req, res) => {
   const body = req.body;
-  console.log("updatePlaylist: " + JSON.stringify(body));
-  console.log("req.body.name: " + req.body.name);
+  // console.log("updatePlaylist: " + JSON.stringify(body));
+  // console.log("req.body.name: " + req.body.name);
 
   if (!body) {
     return res.status(400).json({
@@ -236,7 +236,7 @@ updatePlaylist = async (req, res) => {
         console.log("req.userId: " + req.userId);
         if (user._id !== 0) {
           console.log("correct user!");
-          console.log("req.body.name: " + req.body.name);
+          console.log("req.body.name: ", req.body);
 
           list.name = body.playlist.name;
           list.songs = body.playlist.songs;
@@ -246,6 +246,8 @@ updatePlaylist = async (req, res) => {
           list.dislikes = body.playlist.dislikes;
           list.likesCount = body.playlist.likes.length;
           list.dislikesCount = body.playlist.dislikes.length;
+          list.listens = body.playlist.listens;
+          list.comments = body.playlist.comments;
 
           list
             .save()

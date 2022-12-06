@@ -639,6 +639,45 @@ function GlobalStoreContextProvider(props) {
     await store.loadIdNamePairs();
   };
 
+  store.addComment = async function (comment) {
+    async function update() {
+      let object = {
+        name: auth.user.firstName,
+        comment: comment,
+      };
+      store.currentList.comments.push(object);
+      await store.updateCurrentList();
+    }
+
+    update();
+  };
+
+  /*store.addListen = async function () {
+    async function update() {
+      store.currentList.listens = store.currentList.listens + 1;
+      let response = await api.updatePlaylistById(
+        store.currentList._id,
+        store.currentList
+      );
+      if (response.data.success) {
+        async function getListPairs() {
+          response = await api.getAllPlaylists();
+          if (response.data.success) {
+            let pairsArray = response.data.data;
+            console.log("pairsArray", pairsArray);
+            storeReducer({
+              type: GlobalStoreActionType.LIKE,
+              payload: pairsArray,
+            });
+          }
+        }
+        await getListPairs();
+      }
+    }
+    await update();
+    await store.loadIdNamePairs();
+  };*/
+
   // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS
   store.loadIdNamePairs = async function () {
     let response = [];
@@ -675,7 +714,7 @@ function GlobalStoreContextProvider(props) {
   store.loadIdNamePairs2 = async function (query, query2) {
     let response = [];
     if (auth.user !== null) {
-      response = await api.getPlaylistPairs(store.sortQuery, store.searchQuery);
+      response = await api.getPlaylistPairs(query, query2);
     }
 
     const response2 = await api.getAllPlaylists(query, query2);
@@ -838,6 +877,7 @@ function GlobalStoreContextProvider(props) {
     // NOW MAKE IT OFFICIAL
     await store.updateCurrentList();
   };
+
   // THIS FUNCTION MOVES A SONG IN THE CURRENT LIST FROM
   // start TO end AND ADJUSTS ALL OTHER ITEMS ACCORDINGLY
   store.moveSong = async function (start, end) {

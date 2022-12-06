@@ -208,7 +208,7 @@ function ListCard2(props) {
           <p>Published: {playlist.publishedDate.substring(0, 10)}</p>
         </Grid>
         <Grid item xs={3}>
-          <p>Listens: 342</p>
+          <p>Listens: {playlist.listens}</p>
         </Grid>
         <Grid item xs={3}>
           {!isExpanded && <ExpandMoreIcon onClick={expand} />}

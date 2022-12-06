@@ -9,6 +9,7 @@ import Grid from "@mui/material/Grid";
 
 export default function YouTubePlayer() {
   const { store } = useContext(GlobalStoreContext);
+  const [play, setPlay] = useState(false);
 
   useEffect(async () => {
     console.log(store);
@@ -38,22 +39,34 @@ export default function YouTubePlayer() {
   }
 
   function onPlayerReady(event) {
-    loadAndPlayCurrentSong(event.target);
-    event.target.playVideo();
+    if (play) {
+      loadAndPlayCurrentSong(event.target);
+      event.target.playVideo();
+    }
+  }
+
+  function stop() {
+    setPlay(false);
+  }
+
+  async function resume() {
+    setPlay(true);
   }
 
   async function onPlayerStateChange(event) {
     let playerStatus = event.data;
     let player = event.target;
     if (playerStatus === 0) {
-      await incSong();
-      loadAndPlayCurrentSong(player);
+      if (play) {
+        await incSong();
+        loadAndPlayCurrentSong(player);
+      }
     }
   }
 
   const opts = {
-    height: "300",
-    width: "500",
+    height: "250",
+    width: "400",
     playerVars: {
       // https://developers.google.com/youtube/player_parameters
       autoplay: 1,
@@ -64,7 +77,9 @@ export default function YouTubePlayer() {
     store.currentList.songs.length > 0 && (
       <div>
         <YouTube
-          videoId={store.currentList.songs[store.currentPlayIndex].youTubeId}
+          videoId={
+            play && store.currentList.songs[store.currentPlayIndex].youTubeId
+          }
           opts={opts}
           onReady={onPlayerReady}
           onStateChange={onPlayerStateChange}
@@ -81,10 +96,10 @@ export default function YouTubePlayer() {
             <SkipPreviousIcon onClick={decSong} />
           </Grid>
           <Grid xs={2}>
-            <StopIcon />
+            <StopIcon onClick={stop} />
           </Grid>
           <Grid xs={2}>
-            <PlayArrowIcon />
+            <PlayArrowIcon onClick={resume} />
           </Grid>
           <Grid xs={2}>
             <SkipNextIcon onClick={incSong} />
