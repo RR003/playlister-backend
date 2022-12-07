@@ -1,10 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
 import Comment from "./Comment";
 import { GlobalStoreContext } from "../store";
+import AuthContext from "../auth";
 import TextField from "@mui/material/TextField";
 
 function Comments() {
   const { store } = useContext(GlobalStoreContext);
+  const { auth } = useContext(AuthContext);
 
   useEffect(async () => {}, [store]);
 
@@ -22,14 +24,16 @@ function Comments() {
           <Comment comment={comment} />
         ))}
       </div>
-      <div className="add-comment">
-        <TextField
-          id="outlined-basic"
-          label="Outlined"
-          variant="outlined"
-          onKeyDown={handleChange}
-        />
-      </div>
+      {auth.user !== null && (
+        <div className="add-comment">
+          <TextField
+            id="outlined-basic"
+            label="Outlined"
+            variant="outlined"
+            onKeyDown={handleChange}
+          />
+        </div>
+      )}
     </div>
   );
 }

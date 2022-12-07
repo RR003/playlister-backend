@@ -32,6 +32,7 @@ export const loginUser = (email, password) => {
 };
 export const logoutUser = () => api.get(`/logout/`);
 export const registerUser = (
+  username,
   firstName,
   lastName,
   email,
@@ -44,6 +45,7 @@ export const registerUser = (
     email: email,
     password: password,
     passwordVerify: passwordVerify,
+    username: username,
   });
 };
 const apis = {

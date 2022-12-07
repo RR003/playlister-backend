@@ -78,6 +78,7 @@ loginUser = async (req, res) => {
           firstName: existingUser.firstName,
           lastName: existingUser.lastName,
           email: existingUser.email,
+          username: existingUser.username,
         },
       });
   } catch (err) {
@@ -99,7 +100,14 @@ logoutUser = async (req, res) => {
 
 registerUser = async (req, res) => {
   try {
-    const { firstName, lastName, email, password, passwordVerify } = req.body;
+    const {
+      firstName,
+      lastName,
+      email,
+      password,
+      passwordVerify,
+      username,
+    } = req.body;
     console.log(
       "create user: " +
         firstName +
@@ -110,9 +118,18 @@ registerUser = async (req, res) => {
         " " +
         password +
         " " +
-        passwordVerify
+        passwordVerify +
+        " " +
+        username
     );
-    if (!firstName || !lastName || !email || !password || !passwordVerify) {
+    if (
+      !firstName ||
+      !lastName ||
+      !email ||
+      !password ||
+      !passwordVerify ||
+      !username
+    ) {
       return res
         .status(400)
         .json({ errorMessage: "Please enter all required fields." });
@@ -131,11 +148,20 @@ registerUser = async (req, res) => {
     }
     console.log("password and password verify match");
     const existingUser = await User.findOne({ email: email });
+
     console.log("existingUser: " + existingUser);
     if (existingUser) {
       return res.status(400).json({
         success: false,
         errorMessage: "An account with this email address already exists.",
+      });
+    }
+
+    const existingUser2 = await User.findOne({ username: username });
+    if (existingUser2) {
+      return res.status(400).json({
+        success: false,
+        errorMessage: "An account with this username already exists.",
       });
     }
 
@@ -149,6 +175,7 @@ registerUser = async (req, res) => {
       lastName,
       email,
       passwordHash,
+      username,
     });
     const savedUser = await newUser.save();
     console.log("new user saved: " + savedUser._id);
@@ -170,6 +197,7 @@ registerUser = async (req, res) => {
           firstName: savedUser.firstName,
           lastName: savedUser.lastName,
           email: savedUser.email,
+          username: savedUser.username,
         },
       });
 

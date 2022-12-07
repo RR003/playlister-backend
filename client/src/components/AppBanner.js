@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import AuthContext from "../auth";
 import { GlobalStoreContext } from "../store";
+import logo from "../Playlister.png";
 
 import EditToolbar from "./EditToolbar";
 
@@ -51,14 +52,7 @@ export default function AppBanner() {
       }}
       open={isMenuOpen}
       onClose={handleMenuClose}
-    >
-      <MenuItem onClick={handleMenuClose}>
-        <Link to="/login/">Login</Link>
-      </MenuItem>
-      <MenuItem onClick={handleMenuClose}>
-        <Link to="/register/">Create New Account</Link>
-      </MenuItem>
-    </Menu>
+    ></Menu>
   );
   const loggedInMenu = (
     <Menu
@@ -92,12 +86,11 @@ export default function AppBanner() {
   function getAccountMenu(loggedIn) {
     let userInitials = auth.getUserInitials();
     if (loggedIn) return userInitials;
-    else return <AccountCircle />;
   }
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+      <AppBar position="static" style={{ background: "#2E3B55" }}>
         <Toolbar>
           <Typography
             variant="h4"
@@ -106,7 +99,7 @@ export default function AppBanner() {
             sx={{ display: { xs: "none", sm: "block" } }}
           >
             <Link style={{ textDecoration: "none", color: "white" }} to="/">
-              ⌂
+              <img src={logo} style={{ height: "12%", width: "12%" }}></img>
             </Link>
           </Typography>
           <Box sx={{ flexGrow: 1 }}>{editToolbar}</Box>

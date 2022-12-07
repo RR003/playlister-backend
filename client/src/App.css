@@ -62,7 +62,6 @@ body {
   border-width: 2px;
   border-style: solid;
   border-radius: 10px;
-  padding-left: 10%;
   padding-top: 5%;
   padding-bottom: 5%;
   height: 70%;
@@ -183,6 +182,16 @@ body {
 
 .unselected-list-card {
   background-color: var(--swatch-complement);
+}
+
+.description {
+  font-size: 20px;
+  margin-left: 20%;
+  margin-right: 20%;
+}
+
+.login-button {
+  margin: 20px;
 }
 
 .list-card-button {
@@ -331,6 +340,10 @@ input {
 
 .modal-dialog > * {
   padding: 1rem;
+}
+
+.app-bar {
+  color: white;
 }
 
 .modal-header,

@@ -181,30 +181,60 @@ getPlaylists = async (req, res) => {
   let q = req.params.q;
   // let type = req.query.type;
   let searchParam = req.query.search;
+  let typeParam = req.query.type;
 
   if (searchParam === undefined) {
     searchParam = "";
   }
 
-  let regexp = new RegExp("^" + searchParam);
-  if (q == -1) {
-    await Playlist.find({ published: true, name: regexp }, (err, playlists) => {
-      console.log("PLAYLISTS = ", playlists);
-      if (err) {
-        return res.status(400).json({ success: false, error: err });
-      }
+  if (typeParam === "false") {
+    let regexp = new RegExp(searchParam);
+    if (q == -1) {
+      await Playlist.find(
+        { published: true, name: regexp },
+        (err, playlists) => {
+          console.log("PLAYLISTS = ", playlists);
+          if (err) {
+            return res.status(400).json({ success: false, error: err });
+          }
 
+          return res.status(200).json({ success: true, data: playlists });
+        }
+      ).catch((err) => {
+        console.log(err);
+      });
+    } else {
+      let playlists = await Playlist.find({
+        published: true,
+        name: regexp,
+      }).sort(sortParam[q]);
+      console.log("PLAYLISTS = ", playlists);
       return res.status(200).json({ success: true, data: playlists });
-    }).catch((err) => {
-      console.log(err);
-    });
+    }
   } else {
-    let playlists = await Playlist.find({
-      published: true,
-      name: regexp,
-    }).sort(sortParam[q]);
-    console.log("PLAYLISTS = ", playlists);
-    return res.status(200).json({ success: true, data: playlists });
+    let regexp = new RegExp(searchParam);
+    if (q == -1) {
+      await Playlist.find(
+        { published: true, ownerName: regexp },
+        (err, playlists) => {
+          console.log("PLAYLISTS = ", playlists);
+          if (err) {
+            return res.status(400).json({ success: false, error: err });
+          }
+
+          return res.status(200).json({ success: true, data: playlists });
+        }
+      ).catch((err) => {
+        console.log(err);
+      });
+    } else {
+      let playlists = await Playlist.find({
+        published: true,
+        ownerName: regexp,
+      }).sort(sortParam[q]);
+      console.log("PLAYLISTS = ", playlists);
+      return res.status(200).json({ success: true, data: playlists });
+    }
   }
 };
 

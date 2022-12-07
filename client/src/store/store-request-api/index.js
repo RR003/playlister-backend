@@ -53,10 +53,11 @@ export const updatePlaylistById = (id, playlist) => {
     playlist: playlist,
   });
 };
-export const getAllPlaylists = (q, search) => {
+export const getAllPlaylists = (q, search, type) => {
   return api.get(`/playlists/${q}`, {
     params: {
       search: search,
+      type: type,
     },
   });
 };

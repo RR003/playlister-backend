@@ -526,7 +526,7 @@ function GlobalStoreContextProvider(props) {
       newListName,
       [],
       auth.user.email,
-      auth.user.firstName + " " + auth.user.lastName
+      auth.user.username
     );
     if (response.status === 201) {
       tps.clearAllTransactions();
@@ -549,7 +549,7 @@ function GlobalStoreContextProvider(props) {
       newListName,
       playlist.songs,
       auth.user.email,
-      auth.user.firstName + " " + auth.user.lastName
+      auth.user.username
     );
     if (response.status === 201) {
       tps.clearAllTransactions();
@@ -642,7 +642,7 @@ function GlobalStoreContextProvider(props) {
   store.addComment = async function (comment) {
     async function update() {
       let object = {
-        name: auth.user.firstName,
+        name: auth.user.username,
         comment: comment,
       };
       store.currentList.comments.push(object);
@@ -688,7 +688,7 @@ function GlobalStoreContextProvider(props) {
     const response2 = await api.getAllPlaylists(
       store.sortQuery,
       store.searchQuery,
-      1
+      false
     );
     if (response2.data.success) {
       let pairsArray = [];
@@ -711,13 +711,13 @@ function GlobalStoreContextProvider(props) {
     }
   };
 
-  store.loadIdNamePairs2 = async function (query, query2) {
+  store.loadIdNamePairs2 = async function (query, query2, query3) {
     let response = [];
     if (auth.user !== null) {
       response = await api.getPlaylistPairs(query, query2);
     }
 
-    const response2 = await api.getAllPlaylists(query, query2);
+    const response2 = await api.getAllPlaylists(query, query2, query3);
     if (response2.data.success) {
       let pairsArray = [];
       if (auth.user !== null) pairsArray = response.data.idNamePairs;
