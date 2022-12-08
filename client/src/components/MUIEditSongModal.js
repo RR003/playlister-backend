@@ -47,7 +47,7 @@ export default function MUIEditSongModal() {
   function handleUpdateYouTubeId(event) {
     setYouTubeId(event.target.value);
   }
-  console.log(store.currentSong);
+  console.log(store);
   return (
     <Modal open={store.currentSong !== null}>
       <Box sx={style}>

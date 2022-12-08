@@ -26,23 +26,26 @@ const AllPlaylists = () => {
     console.log(store.idNamePairs);
     listCard = (
       <List sx={{ width: "90%", left: "5%", bgcolor: "background.paper" }}>
-        {store.idNamePairs.map(
-          (playlist) =>
-            (!playlist.published && (
-              <ListCard
-                key={playlist._id}
-                playlist={playlist}
-                selected={false}
-              />
-            )) ||
-            (playlist.published && (
-              <ListCard3
-                key={playlist._id}
-                playlist={playlist}
-                selected={false}
-              />
-            ))
-        )}
+        <div className="list-cards-left">
+          {store.idNamePairs.map(
+            (playlist) =>
+              (!playlist.published && (
+                <ListCard
+                  key={playlist._id}
+                  playlist={playlist}
+                  selected={false}
+                />
+              )) ||
+              (playlist.published && (
+                <ListCard3
+                  key={playlist._id}
+                  playlist={playlist}
+                  selected={false}
+                />
+              ))
+          )}
+        </div>
+
         <Grid item xs={12}>
           <div onClick={handleNewPlaylist} className={cardClass}>
             Create New Playlist

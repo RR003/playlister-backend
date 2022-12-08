@@ -24,14 +24,20 @@ function Comments() {
           <Comment comment={comment} />
         ))}
       </div>
-      {auth.user !== null && (
+      {auth.user !== null && store.currentList.published && (
         <div className="add-comment">
           <TextField
             id="outlined-basic"
-            label="Outlined"
+            label="Add a Comment"
             variant="outlined"
             onKeyDown={handleChange}
+            style={{ width: "50vh", marginTop: "20px" }}
           />
+        </div>
+      )}
+      {auth.user !== null && !store.currentList.published && (
+        <div className="add-comment">
+          <p>Publish your playlist so users can view</p>
         </div>
       )}
     </div>

@@ -78,12 +78,8 @@ export default function MenuBar() {
     ];
     let index = arr.indexOf(event.target.value);
     store.updateQueries(index, search).then((e) => {
-      console.log(menu);
       store.loadIdNamePairs2(index, search);
     });
-
-    //await store.loadIdNamePairs();
-    //store.sortAllPlaylists(arr.indexOf(event.target.value));
   };
 
   return (

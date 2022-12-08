@@ -18,6 +18,7 @@ import AddSongButton from "./AddSongButton.js";
 import MUIRemoveSongModal from "./MUIRemoveSongModal";
 import MUIEditSongModal from "./MUIEditSongModal";
 import MUIDeleteModal from "./MUIDeleteModal";
+import MUIPlaylistExists from "./MUIPlaylistExists";
 
 /*
     This is a card in our list of top 5 lists. It lets select
@@ -35,7 +36,7 @@ function ListCard(props) {
 
   useEffect(async () => {
     console.log("this is actially changing2");
-  }, [store]);
+  }, []);
 
   async function expand() {
     if (!isExpanded) {
@@ -52,8 +53,7 @@ function ListCard(props) {
 
   function handleDoubleClick(event) {
     console.log(event.target);
-    if (event.detail === 2) {
-      console.log("double click");
+    if (event.detail === 2 && store.currentList === null) {
       setEditActive(true);
       // store.showEditSongModal(index, song);
     }
@@ -85,7 +85,8 @@ function ListCard(props) {
   function handleKeyPress(event) {
     if (event.code === "Enter") {
       let id = event.target.id.substring("list-".length);
-      store.changeListName(id, text);
+      let response = store.changeListName(id, text);
+      if (response === false) return;
       toggleEdit();
     }
   }
@@ -121,6 +122,8 @@ function ListCard(props) {
   } else if (store.isEditSongModalOpen()) {
     console.log("edit song modal is open");
     modalJSX = <MUIEditSongModal />;
+  } else if (store.isPlaylistExistsModalOpen()) {
+    modalJSX = <MUIPlaylistExists />;
   }
 
   function handleUndo() {

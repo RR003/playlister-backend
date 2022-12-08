@@ -33,7 +33,6 @@ function ListCard2(props) {
   const [disliked, setDisliked] = useState(false);
 
   useEffect(() => {
-    console.log(auth);
     let index = playlist.likes.indexOf(auth.user.email);
     if (index > -1) {
       setLiked(true);
@@ -108,6 +107,9 @@ function ListCard2(props) {
       if (store.currentList === null) {
         setIsExpanded(!isExpanded);
         await store.setCurrentList(playlist._id);
+        /*if (playlist.published) {
+          await store.addListen();
+        }*/
       }
     } else {
       setIsExpanded(!isExpanded);

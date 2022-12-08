@@ -34,8 +34,6 @@ function ListCard2(props) {
   const [disliked, setDisliked] = useState(false);
 
   useEffect(() => {
-    console.log(auth);
-    console.log(store);
     if (auth.user !== null) {
       let index = playlist.likes.indexOf(auth.user.email);
       if (index > -1) {

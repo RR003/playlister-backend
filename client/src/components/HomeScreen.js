@@ -48,7 +48,13 @@ const HomeScreen = () => {
       </List>
     );
   }
-  console.log(auth);
+  let className = "";
+  let className2 = "";
+  if (player) {
+    className2 = "no-show";
+  } else {
+    className = "no-show";
+  }
   return (
     <div id="playlist-selector">
       <MenuBar />
@@ -59,12 +65,12 @@ const HomeScreen = () => {
         </div>
         {store.currentList && (
           <div className="right">
-            <Grid container>
+            <Grid container className="right-buttons">
               {player && (
                 <div>
                   <Button>Player</Button>
                   <Button variant="contained" onClick={handlePlayerSet}>
-                    Comment
+                    Comments
                   </Button>
                 </div>
               )}
@@ -77,8 +83,12 @@ const HomeScreen = () => {
                 </div>
               )}
             </Grid>
-            {player && <YouTubePlayer />}
-            {!player && <Comments />}
+            <div className={className}>
+              <YouTubePlayer />
+            </div>
+            <div className={className2}>
+              <Comments />
+            </div>
           </div>
         )}
       </div>

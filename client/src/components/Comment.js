@@ -1,10 +1,10 @@
 function Comment(props) {
-  let cardClass = "list-card unselected-list-card";
+  let selectClass = "unselected-list-card";
   let { comment } = props;
   console.log(comment);
   return (
-    <div className={cardClass}>
-      {comment.comment} by {comment.name}
+    <div className={selectClass}>
+      {comment.comment} - {comment.name}
     </div>
   );
 }

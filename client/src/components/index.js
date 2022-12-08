@@ -7,6 +7,7 @@ import LoginScreen from "./LoginScreen";
 import MUIDeleteModal from "./MUIDeleteModal";
 import MUIEditSongModal from "./MUIEditSongModal";
 import MUIRemoveSongModal from "./MUIRemoveSongModal";
+import MUIPlaylistExists from "./MUIPlaylistExists";
 import MUIMessageError from "./MUIMessageError";
 import RegisterScreen from "./RegisterScreen";
 import SongCard from "./SongCard";
@@ -35,4 +36,5 @@ export {
   SplashScreen,
   Statusbar,
   WorkspaceScreen,
+  MUIPlaylistExists,
 };
