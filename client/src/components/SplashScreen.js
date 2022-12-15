@@ -31,6 +31,7 @@ export default function SplashScreen() {
         around the world. Create a FREE account today and publish your own
         playlists, while also commenting and liking other playlists.
       </p>
+      <p className="description">Created by Rahul Raja</p>
       <Grid container>
         <Grid xs={3}></Grid>
         <Grid xs={2.5}>
