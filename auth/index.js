@@ -2,11 +2,12 @@ const jwt = require("jsonwebtoken");
 
 function authManager() {
   verify = (req, res, next) => {
-    console.log("req: " + req);
-    console.log("next: " + next);
-    console.log("Who called verify?");
+    // console.log("req: ", req);
+    // console.log("next: ", next);
+    // console.log("Who called verify?");
     try {
       const token = req.cookies.token;
+      console.log(token);
       if (!token) {
         return res.status(401).json({
           loggedIn: false,
@@ -15,10 +16,7 @@ function authManager() {
         });
       }
 
-      const verified = jwt.verify(
-        token,
-        ":r(4[CaQ3`N<#8EV~7<K75Rd/ZpfzBkv`m-x]+QnjQcXazr%w"
-      );
+      const verified = jwt.verify(token, process.env.JWT_SECRET);
       console.log("verified.userId: " + verified.userId);
       req.userId = verified.userId;
 
@@ -40,10 +38,7 @@ function authManager() {
         return null;
       }
 
-      const decodedToken = jwt.verify(
-        token,
-        ":r(4[CaQ3`N<#8EV~7<K75Rd/ZpfzBkv`m-x]+QnjQcXazr%w"
-      );
+      const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
       return decodedToken.userId;
     } catch (err) {
       return null;
@@ -55,7 +50,7 @@ function authManager() {
       {
         userId: userId,
       },
-      ":r(4[CaQ3`N<#8EV~7<K75Rd/ZpfzBkv`m-x]+QnjQcXazr%w"
+      process.env.JWT_SECRET
     );
   };
 
