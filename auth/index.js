@@ -16,7 +16,10 @@ function authManager() {
         });
       }
 
-      const verified = jwt.verify(token, process.env.JWT_SECRET);
+      const verified = jwt.verify(
+        token,
+        ":r(4[CaQ3`N<#8EV~7<K75Rd/ZpfzBkv`m-x]+QnjQcXazr%w;"
+      );
       console.log("verified.userId: " + verified.userId);
       req.userId = verified.userId;
 
@@ -38,7 +41,10 @@ function authManager() {
         return null;
       }
 
-      const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+      const decodedToken = jwt.verify(
+        token,
+        ":r(4[CaQ3`N<#8EV~7<K75Rd/ZpfzBkv`m-x]+QnjQcXazr%w;"
+      );
       return decodedToken.userId;
     } catch (err) {
       return null;
@@ -50,7 +56,7 @@ function authManager() {
       {
         userId: userId,
       },
-      process.env.JWT_SECRET
+      ":r(4[CaQ3`N<#8EV~7<K75Rd/ZpfzBkv`m-x]+QnjQcXazr%w;"
     );
   };
 
