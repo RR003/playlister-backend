@@ -13,7 +13,7 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: ["https://video-playlister.web.app", "http://localhost:3000/"],
+    origin: ["https://video-playlister.web.app", "http://localhost:3000"],
     credentials: true,
   })
 );
